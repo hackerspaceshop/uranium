@@ -30,6 +30,32 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GATE1 2
 #define GATE2 3
 #define GATE3 4
@@ -49,7 +75,46 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int good_night=0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -88,8 +153,36 @@ void goto_sleep()
   pinMode(GATE2,INPUT);
   pinMode(GATE3,INPUT);
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   sbi(PCMSK,0); // remove interrupt handler (debounce)
   delay(100);   // wait  a little till button can be assumed to be released again
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
   // attach the ISR again.  
@@ -99,10 +192,60 @@ void goto_sleep()
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); // Set sleep mode
   sleep_mode(); //Go to sleep
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   good_night=0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,11 +280,42 @@ if(!digitalRead(BUTTON_PIN))
 
 
 
+
 void loop(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
   // if button pressed, turn off.
   if(good_night) goto_sleep();  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   // spin left first
@@ -155,7 +329,30 @@ void loop(){
   } 
 
 
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -191,11 +388,41 @@ void led_on(int led)
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   case 3:
   
   pinMode(GATE1,INPUT);
   pinMode(GATE2,OUTPUT);
   pinMode(GATE3,OUTPUT);  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -237,10 +464,43 @@ void led_on(int led)
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
   break;
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   case 6:
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
     
   pinMode(GATE1,OUTPUT);
@@ -248,9 +508,30 @@ void led_on(int led)
   pinMode(GATE3,OUTPUT);  
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   digitalWrite(GATE3,HIGH); 
   digitalWrite(GATE1,LOW); 
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 break;
   
@@ -263,6 +544,21 @@ break;
  
  
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
 }
@@ -313,15 +609,130 @@ void show_spin(int direction_left)
 
 
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   }
   else //turn right
   {
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
       for(int i=6;i>=1;i--)
+      
+      
+      
+      
+      
+      
+      
+      
+      
     {
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
      led_on(i);
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
      delay(wait);
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
     }  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
