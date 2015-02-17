@@ -29,13 +29,6 @@
 
 
 
-// hw rev 2
-#define GATE1 PIN_B0
-#define GATE2 PIN_B1
-#define GATE3 PIN_B4
-#define BUTTON_PIN PIN_B2
-
-
 
 // hw rev 1
 #define GATE1 PIN_B2
@@ -50,36 +43,33 @@
 // RUNTIME_STATE is looked up in loop() and is changed in button handler ISR on short press
 
 
-
-const uint8_t STATE_SPIN_TORNADO =0;
-const uint8_t STATE_ALL_ON =1;
-const uint8_t STATE_CONSTANT_SPIN =2;
+const uint8_t STATE_CONSTANT_SPIN =0;
+const uint8_t STATE_SPIN_TORNADO =1;
+const uint8_t STATE_ALL_ON =2;
 const uint8_t STATE_FADE_RAYS = 3;
-
-
-// disabled
-//const uint8_t STATE_FADE_SPIN =3;
+const uint8_t STATE_FADE_SPIN =4;
 
 
 // must be 1 higher than mall states above
-const uint8_t STATE_MAXIMUM=4;
+const uint8_t STATE_MAXIMUM=5;
 
 
 
 // current program runnig start_up() changes this to the last known state from eeprom
-uint8_t RUNTIME_STATE = STATE_FADE_RAYS;
+uint8_t RUNTIME_STATE = STATE_FADE_SPIN;
 
 
 
 
 int matrix_table[6][3]=
 {
-  {        GATE3, GATE1, GATE2    },
-  {        GATE3, GATE2, GATE1    },
-  {        GATE3, GATE2, GATE1    },
   {        GATE1, GATE2, GATE3    },
-  {        GATE1, GATE2, GATE3    },
-  {        GATE3, GATE1, GATE2    }
+  {        GATE1, GATE3, GATE2    },
+  {        GATE3, GATE1, GATE2    }, 
+  {        GATE2, GATE3, GATE1    },
+  {        GATE3, GATE2, GATE1    },   
+  {        GATE2, GATE1, GATE3    },
+
 };
 
 
@@ -244,10 +234,9 @@ void loop(){
 
 
 
-// disabled for now.
-//    case STATE_FADE_SPIN:
-//     fade_spin();
-//    break;
+    case STATE_FADE_SPIN:
+    fade_spin();
+    break;
 
 
 
@@ -266,30 +255,12 @@ void led_on(int led)
   pinMode(matrix_table[led][1],OUTPUT);
   pinMode(matrix_table[led][2],INPUT);  
 
+  digitalWrite(matrix_table[led][0],LOW); 
+  digitalWrite(matrix_table[led][1],HIGH);  
 
-  switch(led)
-  {
-    
-   case 0:
-   case 2:
-   case 3:   
-    digitalWrite(matrix_table[led][0],HIGH); 
-    digitalWrite(matrix_table[led][1],LOW);   
-   break;   
-    
-    
-    
-   case 1:
-   case 4:
-   case 5:   
-    digitalWrite(matrix_table[led][0],LOW); 
-    digitalWrite(matrix_table[led][1],HIGH);   
-   break;
-   
 
-   
-   
-  }
+
+
 
 }
 
@@ -316,37 +287,8 @@ void led_strobe(int led, int strobe)
 
 
 
-  switch(led)
-  {
-    
-   case 0:
-   case 2:
-   case 3:   
-
-     digitalWrite(matrix_table[led][0],HIGH);  
-     softPWM(matrix_table[led][1],strobe,1);  
-   break;   
-    
-    
-    
-   case 1:
-   case 4:
-   case 5:   
-     digitalWrite(matrix_table[led][0],LOW);    
-      softPWM(matrix_table[led][1],250-strobe,1); 
-   break;
-   
-
-   
-   
-  }
-
-
-
-
-
-
-
+   digitalWrite(matrix_table[led][0],LOW);    
+   softPWM(matrix_table[led][1],strobe,1); 
 
 }
 
@@ -439,28 +381,24 @@ void all_on()
 void fade_spin()
 {
   
-  int del=520;
-  int del2=3000;  
+
   int del3=10;
  
   for (int i=0;i<=5;i++)
   { 
-    for (int j=1;j<=250;j++)
+    for (int j=1;j<=254;j+=5)
     {
-     led_strobe(i,j);
-      delayMicroseconds(del);   
+     led_strobe(i,j); 
     }
     
+    led_on(i);
      delay(del3);
       
-    for (int j=250;j>0;j--)
+    for (int j=254;j>1;j-=5)
     {
-     led_strobe(i,j);
-      delayMicroseconds(del);      
+     led_strobe(i,j);     
     }
     
-    
-        delay(del3);
     
   }
 }
@@ -476,7 +414,7 @@ void fade_spin()
 void constant_spin()
 {
   
-  int del=7;
+  int del=4;
 
  
   for (int i=0;i<=5;i++)
@@ -505,20 +443,35 @@ void constant_spin()
 
 
 
-void fade_rays()
+void fade_one(int led,int steps)
 {
-  
-
-    int i=random(0,6);
-
-  
-    for (int j=1; j<=250; j++)
+    for (int j=1; j<=254; j+=steps)
     {
-       led_strobe(i,j);
+       led_strobe(led,j);
        if(RUNTIME_STATE != STATE_FADE_RAYS) return;
     }
-    
+}
 
+
+void fade_rays()
+{
+  int steps=random(2,8);
+  
+  int direction = random(0,2);
+  
+ if(direction==1)
+{ 
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(4,steps);
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(0,steps);
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(2,steps); 
+ 
+}
+else
+{
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(5,steps);     
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(3,steps);   
+ if(RUNTIME_STATE != STATE_FADE_RAYS) return; fade_one(1,steps);   
+}
 }
 
 
